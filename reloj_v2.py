@@ -158,3 +158,38 @@ class RelojApp(tk.Tk):
 if __name__ == "__main__":
     app = RelojApp()
     app.mainloop()
+
+
+
+'''
+Este código crea una mini aplicación de reloj digital para el INFORMATORIO apliacando funciones, inportando librerias, etc y TKINDER, muy funcional con las siguientes características:
+
+Muestra la fecha y hora actuales: Actualiza la hora cada segundo y muestra la fecha en formato español (Día de la semana, DD de Mes de AAAA).
+
+Interfaz atractiva: Utiliza colores de fondo y texto contrastantes (negro, cian, verde lima) para una buena visibilidad.
+
+Funcionalidad de alarma: Permite al usuario ingresar una hora (HH:MM) para configurar una alarma.
+
+Validación de entrada: Verifica que la hora de la alarma se ingrese en el formato correcto (HH:MM).
+
+Notificación de alarma: Cuando la hora actual coincide con la alarma configurada, muestra una ventana emergente de "¡ALARMA!".
+
+Estado de la alarma: Muestra un mensaje en la parte inferior de la ventana indicando si la alarma está activada, desactivada o si hubo un error en el formato.
+
+¿Cómo funciona el código?
+
+RelojApp(tk.Tk): Define una clase principal que hereda de tk.Tk, lo que la convierte en la ventana principal de la aplicación.
+
+__init__: El constructor inicializa la ventana, configura el título, tamaño y color de fondo. También define los diccionarios para la traducción de días y meses.
+
+create_widgets: Esta función se encarga de crear todas las etiquetas (para la fecha, la hora y el estado de la alarma), el campo de entrada y el botón para la alarma.
+
+update_datetime: Esta es la función central que se llama cada segundo (self.after(1000, self.update_datetime)). Obtiene la hora y fecha actuales, las formatea, las traduce al español y actualiza las etiquetas correspondientes. También verifica si es la hora de la alarma.
+
+set_alarm: Se llama cuando el usuario hace clic en "Activar Alarma". Obtiene la entrada del usuario, la valida y guarda la hora de la alarma si es válida.
+
+trigger_alarm: Se activa cuando la hora de la alarma coincide con la hora actual. Muestra el mensaje de alarma y luego desactiva la alarma para evitar que suene repetidamente.
+
+if __name__ == "__main__":: Este bloque asegura que la aplicación se ejecute solo cuando el script se inicie directamente (no cuando se importe como un módulo).
+
+'''
