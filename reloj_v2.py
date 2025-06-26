@@ -18,7 +18,7 @@ class RelojApp(tk.Tk):
             "November": "Noviembre", "December": "Diciembre"
         }
         
-        self.title("Proyecto Tkinter Reloj con alarma para la clase del INFORMATORIO 2025")
+        self.title("Alumnos: Roma, Delgado Labrovich y Perez Melgar. Grupo 12-TKinder miniApp")
         self.geometry("600x400") 
         self.resizable(False, False)
         self.configure(bg="black")
