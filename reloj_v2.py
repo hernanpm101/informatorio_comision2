@@ -1,7 +1,7 @@
 import tkinter as tk
 from datetime import datetime
 from tkinter import messagebox
-import pygame.mixer
+import pygame.mixer   #alarma.mp3
 import os
 
 class RelojApp(tk.Tk):
