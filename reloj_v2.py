@@ -1,6 +1,8 @@
 import tkinter as tk
 from datetime import datetime
 from tkinter import messagebox
+import pygame.mixer
+import os
 
 class RelojApp(tk.Tk):
     def __init__(self):
@@ -19,9 +21,16 @@ class RelojApp(tk.Tk):
         }
         
         self.title("Alumnos: Roma, Delgado Labrovich y Perez Melgar. Grupo 12-TKinder RelojApp")
-        self.geometry("600x400") 
+        self.geometry("600x460") 
         self.resizable(False, False)
         self.configure(bg="black")
+
+        # Inicializar el mezclador de Pygame para el sonido
+        try:
+            pygame.mixer.init()
+        except Exception as e:
+            messagebox.showerror("Error de Inicialización de Audio", f"No se pudo inicializar el sistema de audio de Pygame: {e}")
+            print(f"Error al inicializar pygame.mixer: {e}")
 
         # Variable para almacenar la hora de la alarma
         self.alarm_time = None
@@ -48,7 +57,6 @@ class RelojApp(tk.Tk):
             fg="lime green"
         )
         self.time_label.pack(expand=True)
-
         
         # Alarma
         alarm_frame = tk.Frame(self, bg="black")
@@ -57,12 +65,12 @@ class RelojApp(tk.Tk):
         # Etiqueta para el campo de entrada
         alarm_label = tk.Label(
             alarm_frame,
-            text="Alarma para la clase del INFO (HH:MM):",
+            text="⏰ Alarma para la clase del INFO. Comisión 2 (HH:MM):",
             font=("Arial", 14),
             bg="black",
             fg="white"
         )
-        alarm_label.pack(side="left", padx=10)
+        alarm_label.pack(pady=5) # Lo empaquetamos arriba de todo en el frame
         
         # Campo de entrada para la hora de la alarma
         self.alarm_entry = tk.Entry(
@@ -73,7 +81,7 @@ class RelojApp(tk.Tk):
             fg="white",
             insertbackground="white" # Color del cursor
         )
-        self.alarm_entry.pack(side="left", padx=5)
+        self.alarm_entry.pack(pady=5) # Lo empaquetamos después de la etiqueta
         
         # Botón para activar la alarma
         set_alarm_button = tk.Button(
@@ -84,8 +92,19 @@ class RelojApp(tk.Tk):
             fg="black",
             command=self.set_alarm
         )
-        set_alarm_button.pack(side="left", padx=10)
+        set_alarm_button.pack(pady=5) # Empaquetado verticalmente
         
+        # Botón para apagar la alarma manualmente
+        stop_alarm_button = tk.Button(
+            alarm_frame,
+            text="Apagar Alarma",
+            font=("Arial", 12, "bold"),
+            bg="red",
+            fg="white",
+            command=self.stop_alarm
+        )
+        stop_alarm_button.pack(pady=5) # Empaquetado debajo del botón de activar
+
         # Etiqueta para mostrar el estado de la alarma
         self.alarm_status_label = tk.Label(
             self,
@@ -105,7 +124,7 @@ class RelojApp(tk.Tk):
         # Hora y fecha formateadas
         current_time_str = now.strftime("%H:%M:%S")
         
-        # Formato de la fecha: Día, DD de Mes de YYYY tipo Argentina
+        # Formato de la fecha: Día, DD de Mes de AAAA tipo Argentina
         current_date_str = now.strftime("%A, %d de %B de %Y")
         
         # Reemplazo los nombres en inglés por sus equivalentes en español
@@ -144,52 +163,49 @@ class RelojApp(tk.Tk):
             self.alarm_status_label.config(text="Alarma: Desactivada (Error en formato)", fg="red")
             self.alarm_time = None
             
+    def play_alarm_sound(self):
+        """
+        Reproduce un archivo de sonido para la alarma usando pygame.mixer.
+        Asegúrate de tener un archivo de sonido (ej. 'alarma.mp3' o 'alarma.wav') en el mismo directorio.
+        """
+        try:
+            # Obtiene la ruta absoluta del directorio donde se encuentra este script
+            script_dir = os.path.dirname(__file__)
+            # Construye la ruta completa al archivo de sonido
+            sound_file_path = os.path.join(script_dir, 'alarma.mp3') 
+            
+            # Carga el archivo de sonido
+            pygame.mixer.music.load(sound_file_path)
+            # Reproduce el sonido en un bucle continuo hasta que se detenga
+            pygame.mixer.music.play(-1) 
+        except pygame.error as e:
+            messagebox.showerror("Error de Sonido", f"No se pudo reproducir el sonido: {e}\nAsegúrate de que 'alarma.mp3' existe en la misma carpeta que el script y es compatible con Pygame.")
+            print(f"Error al reproducir sonido con pygame.mixer: {e}")
+
     def trigger_alarm(self):
         """
-        Muestra la notificación cuando la alarma suena.
+        Muestra la notificación y reproduce el sonido cuando la alarma suena.
+        La alarma se desactiva inmediatamente después de activarse para evitar bucles.
         """
-        # Detenemos la alarma para que no siga sonando en cada segundo
+        if self.alarm_time is not None:
+            self.play_alarm_sound()
+            messagebox.showinfo("¡ALARMA!", "¡Es hora de la clase del INFORMATORIO!")
+            # Desactivar la alarma para que no se vuelva a disparar en el siguiente segundo
+            # El sonido seguirá sonando hasta que el usuario lo detenga manualmente.
+            self.alarm_time = None
+            self.alarm_status_label.config(text="Alarma: Sonando...", fg="orange")
+            
+    def stop_alarm(self):
+        """
+        Detiene la reproducción del sonido de la alarma y la desactiva.
+        """
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.stop()
+            messagebox.showinfo("Alarma", "Alarma detenida manualmente.")
+        
         self.alarm_time = None
         self.alarm_status_label.config(text="Alarma: Desactivada", fg="red")
-        
-        # Muestra un cuadro de mensaje
-        messagebox.showinfo("¡ALARMA!", "¡Es hora de la clase del INFORMATORIO!")
-               
+                
 if __name__ == "__main__":
     app = RelojApp()
     app.mainloop()
-
-
-
-'''
-Este código crea una mini aplicación de reloj digital para el INFORMATORIO apliacando funciones, inportando librerias, etc y TKINDER, muy funcional con las siguientes características:
-
-Muestra la fecha y hora actuales: Actualiza la hora cada segundo y muestra la fecha en formato español (Día de la semana, DD de Mes de AAAA).
-
-Interfaz atractiva: Utiliza colores de fondo y texto contrastantes (negro, cian, verde lima) para una buena visibilidad.
-
-Funcionalidad de alarma: Permite al usuario ingresar una hora (HH:MM) para configurar una alarma.
-
-Validación de entrada: Verifica que la hora de la alarma se ingrese en el formato correcto (HH:MM).
-
-Notificación de alarma: Cuando la hora actual coincide con la alarma configurada, muestra una ventana emergente de "¡ALARMA!".
-
-Estado de la alarma: Muestra un mensaje en la parte inferior de la ventana indicando si la alarma está activada, desactivada o si hubo un error en el formato.
-
-¿Cómo funciona el código?
-
-RelojApp(tk.Tk): Define una clase principal que hereda de tk.Tk, lo que la convierte en la ventana principal de la aplicación.
-
-__init__: El constructor inicializa la ventana, configura el título, tamaño y color de fondo. También define los diccionarios para la traducción de días y meses.
-
-create_widgets: Esta función se encarga de crear todas las etiquetas (para la fecha, la hora y el estado de la alarma), el campo de entrada y el botón para la alarma.
-
-update_datetime: Esta es la función central que se llama cada segundo (self.after(1000, self.update_datetime)). Obtiene la hora y fecha actuales, las formatea, las traduce al español y actualiza las etiquetas correspondientes. También verifica si es la hora de la alarma.
-
-set_alarm: Se llama cuando el usuario hace clic en "Activar Alarma". Obtiene la entrada del usuario, la valida y guarda la hora de la alarma si es válida.
-
-trigger_alarm: Se activa cuando la hora de la alarma coincide con la hora actual. Muestra el mensaje de alarma y luego desactiva la alarma para evitar que suene repetidamente.
-
-if __name__ == "__main__":: Este bloque asegura que la aplicación se ejecute solo cuando el script se inicie directamente (no cuando se importe como un módulo).
-
-'''
