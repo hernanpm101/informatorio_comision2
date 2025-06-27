@@ -201,7 +201,7 @@ class RelojApp(tk.Tk):
         """
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.stop()
-            messagebox.showinfo("Alarma", "Alarma detenida manualmente.")
+            messagebox.showinfo("Alarma", "Alarma detenida manualmente, gracias ya me dolia la cabeza!.")
         
         self.alarm_time = None
         self.alarm_status_label.config(text="Alarma: Desactivada", fg="red")
