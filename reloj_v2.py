@@ -149,7 +149,7 @@ class RelojApp(tk.Tk):
         """
         alarm_input = self.alarm_entry.get()
         
-        # Validamos el formato de la entrada (HH:MM)
+        # Validacion el formato de la entrada (HH:MM)
         try:
             # parsear la hora para ver si tiene el formato correcto
             datetime.strptime(alarm_input, "%H:%M")
@@ -189,8 +189,7 @@ class RelojApp(tk.Tk):
         """
         if self.alarm_time is not None:
             self.play_alarm_sound()
-            messagebox.showinfo("¡ALARMA!", "¡Es hora de la clase del INFORMATORIO!")
-            # Desactivar la alarma para que no se vuelva a disparar en el siguiente segundo
+            messagebox.showinfo("¡ALARMA!", "¡Es hora de la clase del INFORMATORIO, PRENDE LA COMPU!")
             # El sonido seguirá sonando hasta que el usuario lo detenga manualmente.
             self.alarm_time = None
             self.alarm_status_label.config(text="Alarma: Sonando...", fg="orange")
