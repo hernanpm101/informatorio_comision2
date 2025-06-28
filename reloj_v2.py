@@ -21,7 +21,7 @@ class RelojApp(tk.Tk):
         }
         
         self.title("Alumnos: Roma, Delgado Labrovich, Sotelo y Perez Melgar. Grupo 12-TKinder RelojApp")
-        self.geometry("600x460") 
+        self.geometry("650x460") 
         self.resizable(False, False)
         self.configure(bg="black")
 
